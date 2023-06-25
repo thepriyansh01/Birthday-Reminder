@@ -1,16 +1,16 @@
-import 'package:taskmanager/components/task_tile.dart';
-import 'package:taskmanager/controllers/task_controller.dart';
-import 'package:taskmanager/models/task.dart';
+import 'package:birthdayapp/components/task_tile.dart';
+import 'package:birthdayapp/controllers/task_controller.dart';
+import 'package:birthdayapp/models/task.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:taskmanager/components/notification.dart';
-import 'package:taskmanager/components/tasks_page.dart';
-import 'package:taskmanager/components/theme.dart';
-import 'package:taskmanager/components/theme_notifier.dart';
-import 'package:taskmanager/components/widget/button.dart';
+import 'package:birthdayapp/components/notification.dart';
+import 'package:birthdayapp/components/tasks_page.dart';
+import 'package:birthdayapp/components/theme.dart';
+import 'package:birthdayapp/components/theme_notifier.dart';
+import 'package:birthdayapp/components/widget/button.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
@@ -22,10 +22,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final TextEditingController _searchController = TextEditingController();
   NotificationServices notificationServices = NotificationServices();
   final ValueNotifier<int> _tasksUpdateNotifier = ValueNotifier<int>(0);
   final _taskController = Get.put(TaskController());
   String _selectedDate = DateFormat.yMMMEd().format(DateTime.now());
+  bool isUserSearching = false;
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +59,43 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       actions: [
-        CircleAvatar(
-          backgroundImage: const AssetImage("images/logo.png"),
-          backgroundColor: Theme.of(context).colorScheme.background,
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          width: 250,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: TextFormField(
+            controller: _searchController,
+            decoration: const InputDecoration(
+              hintText: "Search",
+              border: InputBorder.none,
+            ),
+            autofocus: true,
+          ),
         ),
+        const SizedBox(
+          width: 20,
+        ),
+        GestureDetector(
+            onTap: () {
+              if (_searchController.text.isNotEmpty && !isUserSearching) {
+                setState(() {
+                  isUserSearching = true;
+                });
+              } else {
+                setState(() {
+                  isUserSearching = false;
+                });
+              }
+            },
+            child: isUserSearching
+                ? const Icon(
+                    Icons.cancel,
+                    size: 25,
+                  )
+                : const Icon(Icons.search)),
         const SizedBox(
           width: 20,
         )
@@ -91,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           MyButton(
             icon: true,
-            label: 'Add task',
+            label: 'Add Birthday',
             onTap: () async {
               await Get.to(() => const AddTaskPage());
               _tasksUpdateNotifier
@@ -148,9 +183,24 @@ class _MyHomePageState extends State<MyHomePage> {
               itemCount: _taskController.taskList.length,
               itemBuilder: (_, index) {
                 var task = _taskController.taskList[index];
-                // print("task id : ${task.id} = ${task.selectedDate}");
-                // print(" Selected Date = $_selectedDate");
-                if (_selectedDate == task.selectedDate ||
+                if (isUserSearching &&
+                    _searchController.text.isNotEmpty &&
+                    task.title!.contains(_searchController.text)) {
+                  return AnimationConfiguration.staggeredList(
+                    position: index,
+                    child: SlideAnimation(
+                      verticalOffset: 50.0,
+                      child: FadeInAnimation(
+                        child: GestureDetector(
+                          onTap: () {
+                            _showBottomSheet(context, task);
+                          },
+                          child: TaskTile(task),
+                        ),
+                      ),
+                    ),
+                  );
+                } else if (_selectedDate == task.selectedDate ||
                     task.selectedRepeat == "Daily" ||
                     (task.selectedRepeat == "Weekly" &&
                         task.selectedDate!
@@ -191,7 +241,7 @@ class _MyHomePageState extends State<MyHomePage> {
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-        color: Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).colorScheme.background,
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -207,9 +257,8 @@ class _MyHomePageState extends State<MyHomePage> {
             task.isCompleted == 0
                 ? _bottomSheetButton(
                     context: context,
-                    label: "Task Completed",
+                    label: "Wished Birthday",
                     onTap: () {
-                      notificationServices.stopNotification(task.id!);
                       _taskController.markTaskCompleted(task.id!);
                       _taskController.getTasks();
                       Get.back();
@@ -217,7 +266,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     clr: primaryColor)
                 : _bottomSheetButton(
                     context: context,
-                    label: "Mark as Incomplete",
+                    label: "Mark as Unwished",
                     onTap: () {
                       _taskController.markTaskIncomplete(task.id!);
                       _taskController.getTasks();
@@ -226,7 +275,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     clr: primaryColor),
             _bottomSheetButton(
                 context: context,
-                label: "Delete Task",
+                label: "Delete Birthday",
                 onTap: () {
                   notificationServices.stopNotification(task.id!);
                   _taskController.delete(task);
@@ -240,7 +289,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {
                   Get.back();
                 },
-                clr: Theme.of(context).colorScheme.secondary),
+                clr: darkGreyColor),
           ],
         ),
       ),
@@ -264,7 +313,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Center(
             child: Text(
           label,
-          style: subHeadingStyle.copyWith(color: Theme.of(context).cardColor),
+          style: subHeadingStyle.copyWith(color: whiteColor),
         )),
       ),
     );

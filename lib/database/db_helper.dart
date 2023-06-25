@@ -1,4 +1,4 @@
-import 'package:taskmanager/models/task.dart';
+import 'package:birthdayapp/models/task.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DBHelper {
@@ -45,7 +45,6 @@ class DBHelper {
   }
 
   static Future<List<Map<String, dynamic>>> query() async {
-    print("Getting tasks from DB");
     return _db!.query(_tableName);
   }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskmanager/components/theme.dart';
+import 'package:birthdayapp/components/theme.dart';
 
 class MyButton extends StatelessWidget {
   final bool icon;
@@ -16,7 +16,7 @@ class MyButton extends StatelessWidget {
     return GestureDetector(
         onTap: onTap,
         child: Container(
-          width: 120,
+          width: 150,
           height: 50,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
@@ -30,8 +30,8 @@ class MyButton extends StatelessWidget {
                     ? const Row(
                         children: [
                           Icon(
-                            Icons.add,
-                            size: 16,
+                            Icons.add_circle,
+                            size: 20,
                             color: Colors.white,
                           ),
                           SizedBox(

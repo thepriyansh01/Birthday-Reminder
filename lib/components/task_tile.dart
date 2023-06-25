@@ -1,5 +1,5 @@
-import 'package:taskmanager/components/theme.dart';
-import 'package:taskmanager/models/task.dart';
+import 'package:birthdayapp/components/theme.dart';
+import 'package:birthdayapp/models/task.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -40,17 +40,40 @@ class TaskTile extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
+                      Icons.calendar_month,
+                      color: whiteColor,
+                      size: 18,
+                    ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      "${task!.selectedDate}",
+                      style: GoogleFonts.lato(
+                        textStyle:
+                            const TextStyle(fontSize: 14, color: whiteColor),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
                       Icons.access_time_rounded,
-                      color: Colors.grey[200],
+                      color: whiteColor,
                       size: 18,
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      "${task!.startTime} - ${task!.endTime}",
+                      "${task!.startTime}",
                       style: GoogleFonts.lato(
                         textStyle:
-                            TextStyle(fontSize: 13, color: Colors.grey[100]),
+                            const TextStyle(fontSize: 14, color: whiteColor),
                       ),
                     ),
                   ],
@@ -68,13 +91,13 @@ class TaskTile extends StatelessWidget {
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
             height: 60,
-            width: 0.5,
+            width: 1,
             color: Colors.grey[200]!.withOpacity(0.7),
           ),
           RotatedBox(
             quarterTurns: 3,
             child: Text(
-              task!.isCompleted == 1 ? "COMPLETED" : "TODO",
+              task!.isCompleted == 1 ? "WISHED" : "TO WISH",
               style: GoogleFonts.lato(
                 textStyle: const TextStyle(
                     fontSize: 10,

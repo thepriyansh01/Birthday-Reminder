@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:taskmanager/components/notification.dart';
-import 'package:taskmanager/components/theme.dart';
-import 'package:taskmanager/components/widget/button.dart';
-import 'package:taskmanager/components/widget/input_field.dart';
-import 'package:taskmanager/controllers/task_controller.dart';
-import 'package:taskmanager/models/task.dart';
+import 'package:birthdayapp/components/notification.dart';
+import 'package:birthdayapp/components/theme.dart';
+import 'package:birthdayapp/components/widget/button.dart';
+import 'package:birthdayapp/components/widget/input_field.dart';
+import 'package:birthdayapp/controllers/task_controller.dart';
+import 'package:birthdayapp/models/task.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
@@ -20,11 +20,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
-  String _startTime = DateFormat("hh:mm a").format(DateTime.now()).toString();
+  String _startTime = "12:00 AM";
   String _endTime = DateFormat("hh:mm a").format(DateTime.now()).toString();
-  int _selectedRemind = 0;
+  int _selectedRemind = 5;
   List<int> remindList = [0, 5, 10, 15, 20];
-  String _selectedRepeat = "Never";
+  String _selectedRepeat = "Yearly";
   List<String> repeatList = ["Never", "Daily", "Weekly", "Monthly", "Yearly"];
   int _selectedColor = 0;
 
@@ -39,8 +39,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               MyInputField(
-                title: "Title",
-                hint: "Enter title here...",
+                title: "Name",
+                hint: "Enter name here...",
                 controller: _titleController,
               ),
               MyInputField(
@@ -49,7 +49,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 controller: _noteController,
               ),
               MyInputField(
-                title: "Date",
+                title: "Birthday Date",
                 hint: DateFormat.yMMMMEEEEd().format(_selectedDate),
                 widget: IconButton(
                     onPressed: () {
@@ -57,34 +57,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     },
                     icon: const Icon(Icons.calendar_month_rounded)),
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: MyInputField(
-                      title: "Start Time",
-                      hint: _startTime,
-                      widget: IconButton(
-                          onPressed: () {
-                            _getTimeFromUser("startTime");
-                          },
-                          icon: const Icon(Icons.access_time)),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  Expanded(
-                    child: MyInputField(
-                      title: "End Time",
-                      hint: _endTime,
-                      widget: IconButton(
-                          onPressed: () {
-                            _getTimeFromUser("endTime");
-                          },
-                          icon: const Icon(Icons.access_time)),
-                    ),
-                  ),
-                ],
+              MyInputField(
+                title: "Wishing Time",
+                hint: _startTime,
+                widget: IconButton(
+                    onPressed: () {
+                      _getTimeFromUser("startTime");
+                    },
+                    icon: const Icon(Icons.access_time)),
               ),
               MyInputField(
                 title: "Remind",
@@ -236,7 +216,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
         scheduleTime.add(Duration(hours: hoursToAdd, minutes: minutesToAdd));
     scheduleTime = scheduleTime.subtract(Duration(minutes: _selectedRemind));
 
-    debugPrint(scheduleTime.toString());
     NotificationServices().scheduleNotification(
         id: id,
         title: title,
@@ -255,7 +234,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
         ),
       ),
       title: Text(
-        "Add Task",
+        "Add Birthday",
         style: headingStyle,
       ),
       backgroundColor: Theme.of(context).colorScheme.background,

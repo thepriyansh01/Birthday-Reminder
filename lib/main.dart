@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:taskmanager/components/notification.dart';
-import 'package:taskmanager/database/db_helper.dart';
+import 'package:birthdayapp/components/notification.dart';
+import 'package:birthdayapp/database/db_helper.dart';
 import 'package:provider/provider.dart';
-import 'package:taskmanager/components/home_screen.dart';
-import 'package:taskmanager/components/theme_notifier.dart';
+import 'package:birthdayapp/components/home_screen.dart';
+import 'package:birthdayapp/components/theme_notifier.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 Future<void> main() async {
@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
 
     return GetMaterialApp(
-      title: 'Flutter Demo',
+      title: 'Birthday Reminder',
       debugShowCheckedModeBanner: false,
       theme: themeNotifier.currentTheme,
       home: const MyHomePage(),
